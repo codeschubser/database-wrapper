@@ -80,9 +80,8 @@ class MySQL implements QueryBuilder, DatabaseActions
     public function __construct( $sHost, $sUser, $sPass, $sDatabase, $sCharset = 'utf8', array $aOptions = array() )
     {
         $this->_bConnected  = false;
-        $this->_sStatement  = null;
-        $this->_oStatement  = null;
         $this->__oPDO       = null;
+        $this->__reset();
         // try pdo connection
         try
         {
@@ -111,10 +110,9 @@ class MySQL implements QueryBuilder, DatabaseActions
      */
     public function __destruct()
     {
-        $this->__oPDO       = null;
         $this->_bConnected  = false;
-        $this->_sStatement  = null;
-        $this->_oStatement  = null;
+        $this->__oPDO       = null;
+        $this->__reset();
     }
 
     /**
@@ -251,6 +249,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      */
     final public function select( $mColumns = null )
     {
+        $this->__reset();
         $this->_sStatement = 'SELECT ';
         // asterisk (select all)
         if ( is_null( $mColumns ) )
@@ -349,6 +348,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      */
     final public function delete()
     {
+        $this->__reset();
         $this->_sStatement = 'DELETE';
         // chained
         return $this;
@@ -359,15 +359,22 @@ class MySQL implements QueryBuilder, DatabaseActions
         if ( ! is_null( $sStatement ) )
             $this->_sStatement = $sStatement;
         // prepare
-        $this->_oStatement = $this->__oPDO->prepare( $this->_sStatement );
-        if ( count( $aValues ) > 0 )
-            $bResult = $this->_oStatement->execute( $aValues );
-        else
-            $bResult = $this->_oStatement->execute();
+        try
+        {
+            $this->_oStatement = $this->__oPDO->prepare( $this->_sStatement );
+            if ( count( $aValues ) > 0 )
+                $bResult = $this->_oStatement->execute( $aValues );
+            else
+                $bResult = $this->_oStatement->execute();
 
-        if ( $bResult !== false )
-            return $this;
-        return false;
+            if ( $bResult !== false )
+                return $this;
+            return false;
+        }
+        catch ( Exception $ex )
+        {
+            die( $ex->getMessage() );
+        }
     }
 
     final public function having()
@@ -377,7 +384,7 @@ class MySQL implements QueryBuilder, DatabaseActions
 
     final public function insert( $sObject )
     {
-
+        $this->__reset();
     }
 
     final public function join()
@@ -397,7 +404,7 @@ class MySQL implements QueryBuilder, DatabaseActions
 
     final public function replace( $sObject )
     {
-
+        $this->__reset();
     }
 
     final public function set( array $aValues )
@@ -426,6 +433,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      */
     final public function update( $sObject )
     {
+        $this->__reset();
         $this->_sStatement .= 'UPDATE ';
         // single or list of database objects
         if ( is_string( $sObject ) )
@@ -486,10 +494,10 @@ class MySQL implements QueryBuilder, DatabaseActions
         if ( $this->_bConnected !== false )
         {
             // execute
-            if ( $this->_oStatement !== true )
+            if ( is_null( $this->_oStatement ) )
                 $this->execute();
             // detect fetch type
-            if ( $this->_oStatement !== false )
+            if ( ! is_null( $this->_oStatement ) )
             {
                 switch( strtolower( $mType ) )
                 {
@@ -531,9 +539,12 @@ class MySQL implements QueryBuilder, DatabaseActions
                 }
                 // return results
                 if ( $bSingleRow !== true )
-                    return $this->_oStatement->fetchAll( $iType );
+                    $aResults = $this->_oStatement->fetchAll( $iType );
                 else
-                    return $this->_oStatement->fetch( $iType );
+                    $aResults = $this->_oStatement->fetch( $iType );
+
+                $this->__reset();
+                return $aResults;
             }
         }
         return false;
@@ -591,5 +602,17 @@ class MySQL implements QueryBuilder, DatabaseActions
         {
             return '`' . $sColumn . '`';
         }
+    }
+    /**
+     * Reset class variables
+     *
+     * @access  private
+     * @since   0.0.1
+     * @return  void
+     */
+    private function __reset()
+    {
+        $this->_sStatement  = null;
+        $this->_oStatement  = null;
     }
 }
