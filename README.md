@@ -36,4 +36,18 @@ $obj->select()->from( 'table' )->where( 'id', 'is not', null );
 # SELECT * FROM `table` WHERE `id` IS NOT NULL
 $obj->select()->from( 'table' )->where( 'name', 'like', '%foo%' );
 # SELECT * FROM `table` WHERE `name` LIKE '%foo%'
+$obj->select( array( 'count:group' => 'cnt' ) )->from( 'table' )->group( 'group' );
+// SELECT COUNT(`group`) AS `cnt` FROM `table` GROUP BY `group`
+$obj->select( array( 'count:group' => 'cnt' ) )->from( 'table' )->group( array( 'group','name' ) );
+// SELECT COUNT(`group`) AS `cnt` FROM `table` GROUP BY `group`,`name`
+$obj->select()->from( 'table' )->order( 'name' );
+// SELECT * FROM `table` ORDER BY `name` ASC
+$obj->select()->from( 'table' )->order( array( 'name' => 'desc' ) );
+// SELECT * FROM `table` ORDER BY `name` DESC
+$obj->select()->from( 'table' )->order( array( 'name,id' => 'desc' ) );
+// SELECT * FROM `table` ORDER BY `name`,`id` DESC
+$obj->select()->from( 'table' )->limit( 1 );
+// SELECT * FROM `table` LIMIT 1
+$obj->select()->from( 'table' )->limit( array( 0,2 ) );
+// SELECT * FROM `table` LIMIT 0, 2
 ```
