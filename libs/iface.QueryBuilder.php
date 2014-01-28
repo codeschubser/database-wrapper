@@ -31,8 +31,7 @@ interface QueryBuilder
     public function select( $mColumns = null );
     public function from( $sObject );
     public function where( $sColumn, $sOperator, $mValue );
-    public function limit( $iLength );
-    public function offset( $iOffset );
+    public function limit( $mLimit );
     public function group( $mGroups );
     public function order( $mOrder );
 }
