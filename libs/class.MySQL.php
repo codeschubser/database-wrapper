@@ -329,6 +329,89 @@ class MySQL implements QueryBuilder, DatabaseActions
         return $this->_sStatement;
     }
 
+    final public function delete()
+    {
+
+    }
+
+    final public function execute( $sStatement, array $aValues = array() )
+    {
+
+    }
+
+    final public function having()
+    {
+
+    }
+
+    final public function insert( $sObject )
+    {
+
+    }
+
+    final public function join()
+    {
+
+    }
+
+    final public function join_left()
+    {
+
+    }
+
+    final public function join_right()
+    {
+
+    }
+
+    final public function replace( $sObject )
+    {
+
+    }
+
+    final public function set( array $aValues )
+    {
+
+    }
+
+    final public function update( $sObject )
+    {
+
+    }
+
+    final public function values( array $aValues )
+    {
+
+    }
+
+    final public function where_and( $sColumn, $sOperator, $mValue )
+    {
+
+    }
+
+    final public function where_or( $sColumn, $sOperator, $mValue )
+    {
+
+    }
+
+    final public function affected_rows()
+    {
+
+    }
+
+    final public function count()
+    {
+
+    }
+
+    final public function last_id()
+    {
+
+    }
+
+
+
+
     /**
      * Quote a value.
      *
