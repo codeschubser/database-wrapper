@@ -9,7 +9,7 @@ Select statements
 - - - - - - - - -
 ```bash
 // selectors
-$obj->select()->from( 'table' );
+$obj->select()->from( 'table' );                                                // SELECT * FROM `table`
 $obj->select( 'name' )->from( 'table' );
 $obj->select( 'id,name' )->from( 'table' );
 $obj->select( array( 'name' => 'fullname' ) )->from( 'table' );
