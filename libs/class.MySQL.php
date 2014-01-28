@@ -470,8 +470,18 @@ class MySQL implements QueryBuilder, DatabaseActions
     {
 
     }
-
-    final public function fetch( $sType, $bSingleRow = false )
+    /**
+     * Fetch rows from statement object.
+     *
+     * @final
+     * @access  public
+     * @since   0.0.1
+     * @param   mixed   $mType
+     * @param   boolean $bSingleRow
+     * @return  array|boolean
+     * @uses    execute()   Excute Query if not exists
+     */
+    final public function fetch( $mType, $bSingleRow = false )
     {
         if ( $this->_bConnected !== false )
         {
@@ -481,7 +491,7 @@ class MySQL implements QueryBuilder, DatabaseActions
             // detect fetch type
             if ( $this->_oStatement !== false )
             {
-                switch( strtolower( $sType ) )
+                switch( strtolower( $mType ) )
                 {
                     case 'object':
                     case PDO::FETCH_OBJ:

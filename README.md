@@ -72,8 +72,8 @@ $obj->update( 'table' )->set( $aUpdate )->where( 'id', 'BETWEEN', array( 1, 3 ) 
 Execute and Fetch
 -----------------
 ```bash
-$oExecute   = $obj->select( 'id' )->from( 'tbl_users' )->execute();
+$oExecute   = $obj->select( 'id' )->from( 'table' )->execute();
 $aResult    = $oExecute->fetch( 'object' );
 # OR
-$aResult    = $obj->select( 'id' )->from( 'tbl_users' )->fetch( 'object' );
+$aResult    = $obj->select( 'id' )->from( 'table' )->fetch( 'object' );
 ```
