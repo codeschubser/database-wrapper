@@ -381,12 +381,43 @@ class MySQL implements QueryBuilder, DatabaseActions
 
     final public function set( array $aValues )
     {
-
+        if ( ! is_null( $this->_sStatement ) )
+        {
+            $this->_sStatement .= ' SET ';
+            foreach( $aValues AS $sColumn => $sValue )
+                $this->_sStatement .= $this->__mask( $sColumn ) . ' = ' . $this->__quote( $sValue ) . ', ';
+            $this->_sStatement = substr( $this->_sStatement, 0, -2 );
+            // chained
+            return $this;
+        }
+        // statement is invalid
+        return false;
     }
-
+    /**
+     * Concatenate a update statement and return
+     * object for chaining.
+     *
+     * @final
+     * @access  public
+     * @param   mixed   $sObject
+     * @return  MySQL
+     * @uses    __mask()    Masking columns
+     */
     final public function update( $sObject )
     {
-
+        $this->_sStatement .= 'UPDATE ';
+        // single or list of database objects
+        if ( is_string( $sObject ) )
+            $this->_sStatement .= $this->__mask( $sObject );
+        // array of aliases
+        else if ( is_array( $sObject ) )
+        {
+            foreach( $sObject AS $sColumn => $sAlias )
+                $this->_sStatement .= $this->__mask( $sColumn ) . ' AS ' . $this->__mask( $sAlias ) . ', ';
+            $this->_sStatement = substr( $this->_sStatement, 0, -2 );
+        }
+        // chained
+        return $this;
     }
 
     final public function values( array $aValues )
