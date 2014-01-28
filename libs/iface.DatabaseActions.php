@@ -28,5 +28,8 @@
  */
 interface DatabaseActions
 {
-
+    public function execute( $sStatement, array $aValues = array() );
+    public function count();
+    public function affected_rows();
+    public function last_id();
 }
