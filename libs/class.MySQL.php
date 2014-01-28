@@ -186,7 +186,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @access  public
      * @since   0.0.1
      * @param   mixed   $mLimit
-     * @return  void|false
+     * @return  MySQL|false
      */
     final public function limit( $mLimit )
     {
@@ -201,6 +201,8 @@ class MySQL implements QueryBuilder, DatabaseActions
             // single or list of limit
             else
                 $this->_sStatement .= $mLimit;
+            // chained
+            return $this;
         }
         // statement is invalid
         return false;
