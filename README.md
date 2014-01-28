@@ -3,10 +3,8 @@ database-wrapper
 
 Chained PDO database wrapper
 
-Features
------------------
 Select statements
-- - - - - - - - -
+-----------------
 ```bash
 $obj->select()->from( 'table' );
 // SELECT * FROM `table`
