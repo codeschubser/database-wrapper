@@ -328,10 +328,20 @@ class MySQL implements QueryBuilder, DatabaseActions
     {
         return $this->_sStatement;
     }
-
+    /**
+     * Concatenate a delete statement and return
+     * object for chaining.
+     *
+     * @final
+     * @access  public
+     * @since   0.0.1
+     * @return  MySQL
+     */
     final public function delete()
     {
-
+        $this->_sStatement = 'DELETE';
+        // chained
+        return $this;
     }
 
     final public function execute( $sStatement, array $aValues = array() )
