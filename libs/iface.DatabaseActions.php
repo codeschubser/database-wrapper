@@ -30,6 +30,7 @@ interface DatabaseActions
 {
     public function affected_rows();
     public function count();
-    public function execute( $sStatement, array $aValues = array() );
+    public function execute( $sStatement = null, array $aValues = array() );
+    public function fetch( $sType, $bSingleRow = false );
     public function last_id();
 }

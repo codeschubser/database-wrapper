@@ -44,6 +44,14 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @var     string
      */
     protected $_sStatement;
+    /**
+     * Statement object
+     *
+     * @access  protected
+     * @since   0.0.1
+     * @var     object
+     */
+    protected $_oStatement;
 
     /**
      * PDO object
@@ -73,6 +81,7 @@ class MySQL implements QueryBuilder, DatabaseActions
     {
         $this->_bConnected  = false;
         $this->_sStatement  = null;
+        $this->_oStatement  = null;
         $this->__oPDO       = null;
         // try pdo connection
         try
@@ -105,6 +114,7 @@ class MySQL implements QueryBuilder, DatabaseActions
         $this->__oPDO       = null;
         $this->_bConnected  = false;
         $this->_sStatement  = null;
+        $this->_oStatement  = null;
     }
 
     /**
@@ -344,9 +354,20 @@ class MySQL implements QueryBuilder, DatabaseActions
         return $this;
     }
 
-    final public function execute( $sStatement, array $aValues = array() )
+    final public function execute( $sStatement = null, array $aValues = array() )
     {
+        if ( ! is_null( $sStatement ) )
+            $this->_sStatement = $sStatement;
+        // prepare
+        $this->_oStatement = $this->__oPDO->prepare( $this->_sStatement );
+        if ( count( $aValues ) > 0 )
+            $bResult = $this->_oStatement->execute( $aValues );
+        else
+            $bResult = $this->_oStatement->execute();
 
+        if ( $bResult !== false )
+            return $this;
+        return false;
     }
 
     final public function having()
@@ -448,6 +469,64 @@ class MySQL implements QueryBuilder, DatabaseActions
     final public function last_id()
     {
 
+    }
+
+    final public function fetch( $sType, $bSingleRow = false )
+    {
+        if ( $this->_bConnected !== false )
+        {
+            // execute
+            if ( $this->_oStatement !== true )
+                $this->execute();
+            // detect fetch type
+            if ( $this->_oStatement !== false )
+            {
+                switch( strtolower( $sType ) )
+                {
+                    case 'object':
+                    case PDO::FETCH_OBJ:
+                        $iType = PDO::FETCH_OBJ;
+                        break;
+                    case 'assoc':
+                    case PDO::FETCH_ASSOC:
+                        $iType = PDO::FETCH_ASSOC;
+                        break;
+                    case 'bound':
+                    case PDO::FETCH_BOUND:
+                        $iType = PDO::FETCH_BOUND;
+                        break;
+                    case 'class':
+                    case PDO::FETCH_CLASS:
+                        $iType = PDO::FETCH_CLASS;
+                        break;
+                    case 'into':
+                    case PDO::FETCH_INTO:
+                        $iType = PDO::FETCH_INTO;
+                        break;
+                    case 'lazy':
+                    case PDO::FETCH_LAZY:
+                        $iType = PDO::FETCH_LAZY;
+                        break;
+                    case 'named':
+                    case PDO::FETCH_NAMED:
+                        $iType = PDO::FETCH_NAMED;
+                        break;
+                    case 'num':
+                    case PDO::FETCH_NUM:
+                        $iType = PDO::FETCH_NUM;
+                        break;
+                    default:
+                        $iType = PDO::FETCH_BOTH;
+                        break;
+                }
+                // return results
+                if ( $bSingleRow !== true )
+                    return $this->_oStatement->fetchAll( $iType );
+                else
+                    return $this->_oStatement->fetch( $iType );
+            }
+        }
+        return false;
     }
 
 

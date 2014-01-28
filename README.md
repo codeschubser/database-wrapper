@@ -69,3 +69,11 @@ $aUpdate = array(
 $obj->update( 'table' )->set( $aUpdate )->where( 'id', 'BETWEEN', array( 1, 3 ) );
 # UPDATE `table` SET `name` = 'foo', `last` = 'bar' WHERE `id` BETWEEN '1' AND '3'
 ```
+Execute and Fetch
+-----------------
+```bash
+$oExecute   = $obj->select( 'id' )->from( 'tbl_users' )->execute();
+$aResult    = $oExecute->fetch( 'object' );
+# OR
+$aResult    = $obj->select( 'id' )->from( 'tbl_users' )->fetch( 'object' );
+```
