@@ -28,26 +28,22 @@
  */
 interface QueryBuilder
 {
-    public function select( $mColumns = null );
+    public function delete();
     public function from( $sObject );
-    public function where( $sColumn, $sOperator, $mValue );
-    public function limit( $mLimit );
     public function group( $mGroups );
-    public function order( $mOrder );
-
+    public function having();
+    public function insert( $sObject );
     public function join();
     public function join_left();
     public function join_right();
-    public function having();
+    public function limit( $mLimit );
+    public function order( $mOrder );
+    public function replace( $sObject );
+    public function select( $mColumns = null );
+    public function set( array $aValues );
+    public function update( $sObject );
+    public function values( array $aValues );
+    public function where( $sColumn, $sOperator, $mValue );
     public function where_and( $sColumn, $sOperator, $mValue );
     public function where_or( $sColumn, $sOperator, $mValue );
-
-    public function update( $sObject );
-    public function set( array $aValues );
-
-    public function insert( $sObject );
-    public function replace( $sObject );
-    public function values( array $aValues );
-
-    public function delete();
 }
