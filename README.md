@@ -3,6 +3,26 @@ database-wrapper
 
 Chained PDO database wrapper
 
+Connection
+----------
+```bash
+require_once '../libs/iface.QueryBuilder.php';
+require_once '../libs/iface.DatabaseActions.php';
+require_once '../libs/class.MySQL.php';
+
+$obj = new MySQL(
+    'localhost',
+    'user',
+    'password',
+    'database',
+    'utf8',
+    array(
+        PDO::ATTR_PERSISTENT            => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND    => 'SET NAMES utf8'
+    )
+);
+```
+
 Select statements
 -----------------
 ```bash
