@@ -51,3 +51,11 @@ $obj->select()->from( 'table' )->limit( 1 );
 $obj->select()->from( 'table' )->limit( array( 0,2 ) );
 // SELECT * FROM `table` LIMIT 0, 2
 ```
+Delete statements
+-----------------
+```bash
+$obj->delete()->from( 'table' );
+// DELETE FROM `table`
+$obj->delete()->from( 'table' )->where( 'id', '=', 1 );
+// DELETE FROM `table` WHERE `id` = '1'
+```
