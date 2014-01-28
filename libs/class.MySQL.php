@@ -76,6 +76,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @param   string  $sCharset   default: utf8
      * @param   array   $aOptions   default: empty array
      * @return  void
+     * @throws  Exception
      */
     public function __construct( $sHost, $sUser, $sPass, $sDatabase, $sCharset = 'utf8', array $aOptions = array() )
     {
@@ -353,7 +354,17 @@ class MySQL implements QueryBuilder, DatabaseActions
         // chained
         return $this;
     }
-
+    /**
+     * Execute a given or existing statement and
+     * return the result.
+     *
+     * @final
+     * @access  public
+     * @param   string  $sStatement default: null
+     * @param   array   $aValues    default: empty array
+     * @return  MySQL|boolean
+     * @throws  Exception
+     */
     final public function execute( $sStatement = null, array $aValues = array() )
     {
         if ( ! is_null( $sStatement ) )
@@ -362,11 +373,31 @@ class MySQL implements QueryBuilder, DatabaseActions
         try
         {
             $this->_oStatement = $this->__oPDO->prepare( $this->_sStatement );
+            // execute with bind
             if ( count( $aValues ) > 0 )
-                $bResult = $this->_oStatement->execute( $aValues );
+            {
+                try
+                {
+                    $bResult = $this->_oStatement->execute( $aValues );
+                }
+                catch ( Exception $ex )
+                {
+                    die( $ex->getMessage() );
+                }
+            }
+            // execute
             else
-                $bResult = $this->_oStatement->execute();
-
+            {
+                try
+                {
+                    $bResult = $this->_oStatement->execute();
+                }
+                catch ( Exception $ex )
+                {
+                    die( $ex->getMessage() );
+                }
+            }
+            // result
             if ( $bResult !== false )
                 return $this;
             return false;
