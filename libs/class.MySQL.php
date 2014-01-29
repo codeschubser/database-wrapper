@@ -124,7 +124,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @access  public
      * @since   0.0.1
      * @param   mixed   $sObject
-     * @return  MySQL|false
+     * @return  object\MySQL
      * @uses    __mask()    Masking columns
      */
     final public function from( $sObject )
@@ -142,11 +142,9 @@ class MySQL implements QueryBuilder, DatabaseActions
                     $this->_sStatement .= $this->__mask( $sColumn ) . ' AS ' . $this->__mask( $sAlias ) . ',';
                 $this->_sStatement = substr( $this->_sStatement, 0, -1 );
             }
-            // chained
-            return $this;
         }
-        // statement is invalid
-        return false;
+        // chained
+        return $this;
     }
     /**
      * Concatenate the group clause.
@@ -155,7 +153,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @access  public
      * @since   0.0.1
      * @param   mixed   $mGroups
-     * @return  MySQL|boolean
+     * @return  object\MySQL
      * @uses    __mask()    Masking columns
      */
     final public function group( $mGroups )
@@ -173,11 +171,9 @@ class MySQL implements QueryBuilder, DatabaseActions
                     $this->_sStatement .= $this->__mask( $sColumn ) . ',';
                 $this->_sStatement = substr( $this->_sStatement, 0, -1 );
             }
-            // chained
-            return $this;
         }
-        // statement is invalid
-        return false;
+        // chained
+        return $this;
     }
     /**
      * Concatenate a limitation.
@@ -186,7 +182,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @access  public
      * @since   0.0.1
      * @param   mixed   $mLimit
-     * @return  MySQL|false
+     * @return  object\MySQL
      */
     final public function limit( $mLimit )
     {
@@ -201,11 +197,9 @@ class MySQL implements QueryBuilder, DatabaseActions
             // single or list of limit
             else
                 $this->_sStatement .= $mLimit;
-            // chained
-            return $this;
         }
-        // statement is invalid
-        return false;
+        // chained
+        return $this;
     }
     /**
      * Concatenate a order by statement and return
@@ -215,7 +209,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @access  public
      * @since   0.0.1
      * @param   mixed   $mOrder
-     * @return  MySQL|boolean
+     * @return  object\MySQL
      * @uses    __mask()    Masking columns
      */
     final public function order( $mOrder )
@@ -233,11 +227,9 @@ class MySQL implements QueryBuilder, DatabaseActions
                     $this->_sStatement .= $this->__mask( $sColumn ) . ' ' . strtoupper( $sDirection ) . ',';
                 $this->_sStatement = substr( $this->_sStatement, 0, -1 );
             }
-            // chained
-            return $this;
         }
-        // statement is invalid
-        return false;
+        // chained
+        return $this;
     }
     /**
      * Concatenate a select statement and return
@@ -247,7 +239,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @access  public
      * @since   0.0.1
      * @param   mixed   $mColumns   default: null
-     * @return  MySQL
+     * @return  object\MySQL
      * @uses    __mask()    Masking columns
      */
     final public function select( $mColumns = null )
@@ -296,7 +288,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @param   string  $sColumn
      * @param   string  $sOperator
      * @param   mixed   $mValue
-     * @return  MySQL|boolean
+     * @return  object\MySQL
      * @uses    __mask()    Masking columns
      * @uses    __quote()   Quote values
      */
@@ -323,10 +315,9 @@ class MySQL implements QueryBuilder, DatabaseActions
             // other
             else
                 $this->_sStatement .= $this->__quote( $mValue, PDO::PARAM_INT );
-            // chained
-            return $this;
         }
-        return false;
+        // chained
+        return $this;
     }
     /**
      * Return the statement.
@@ -347,7 +338,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @final
      * @access  public
      * @since   0.0.1
-     * @return  MySQL
+     * @return  object\MySQL
      */
     final public function delete()
     {
@@ -364,7 +355,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @access  public
      * @param   string  $sStatement default: null
      * @param   array   $aValues    default: empty array
-     * @return  MySQL|boolean
+     * @return  object\MySQL
      * @throws  Exception
      */
     final public function execute( $sStatement = null, array $aValues = array() )
@@ -383,7 +374,7 @@ class MySQL implements QueryBuilder, DatabaseActions
             {
                 try
                 {
-                    $bResult = $this->_oStatement->execute( $aValues );
+                    $this->_oStatement->execute( $aValues );
                 }
                 catch ( Exception $ex )
                 {
@@ -395,22 +386,20 @@ class MySQL implements QueryBuilder, DatabaseActions
             {
                 try
                 {
-                    $bResult = $this->_oStatement->execute();
+                    $this->_oStatement->execute();
                 }
                 catch ( Exception $ex )
                 {
                     print 'Execute failed!';
                 }
             }
-            // result
-            if ( $bResult !== false )
-                return $this;
-            return false;
         }
         catch ( Exception $ex )
         {
             print 'Prepare failed!';
         }
+        // chaining
+        return $this;
     }
 
     final public function having()
@@ -442,7 +431,16 @@ class MySQL implements QueryBuilder, DatabaseActions
     {
         $this->__reset();
     }
-
+    /**
+     * Concatenate a set statement for update queries
+     * and return object for chaining.
+     *
+     * @final
+     * @access  public
+     * @since   0.0.1
+     * @param   array   $aValues
+     * @return  object\MySQL
+     */
     final public function set( array $aValues )
     {
         if ( ! is_null( $this->_sStatement ) )
@@ -451,11 +449,9 @@ class MySQL implements QueryBuilder, DatabaseActions
             foreach( $aValues AS $sColumn => $sValue )
                 $this->_sStatement .= $this->__mask( $sColumn ) . ' = ' . $this->__quote( $sValue ) . ', ';
             $this->_sStatement = substr( $this->_sStatement, 0, -2 );
-            // chained
-            return $this;
         }
-        // statement is invalid
-        return false;
+        // chained
+        return $this;
     }
     /**
      * Concatenate a update statement and return
@@ -464,7 +460,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @final
      * @access  public
      * @param   mixed   $sObject
-     * @return  MySQL
+     * @return  object\MySQL
      * @uses    __mask()    Masking columns
      */
     final public function update( $sObject )
@@ -522,7 +518,7 @@ class MySQL implements QueryBuilder, DatabaseActions
      * @since   0.0.1
      * @param   mixed   $mType
      * @param   boolean $bSingleRow
-     * @return  array|boolean
+     * @return  array
      * @uses    execute()   Excute Query if not exists
      */
     final public function fetch( $mType, $bSingleRow = false )
@@ -583,7 +579,6 @@ class MySQL implements QueryBuilder, DatabaseActions
                 return $aResults;
             }
         }
-        return false;
     }
 
 
