@@ -97,7 +97,7 @@ class MySQL implements QueryBuilder, DatabaseActions
         }
         catch ( Exception $ex )
         {
-            die( $ex->getMessage() );
+            print 'Set connection failed!';
         }
     }
     /**
@@ -371,6 +371,9 @@ class MySQL implements QueryBuilder, DatabaseActions
     {
         if ( ! is_null( $sStatement ) )
             $this->_sStatement = $sStatement;
+        // set query end if not set
+        if ( strrpos( ';', $this->_sStatement ) === false )
+            $this->_sStatement .= ';';
         // prepare
         try
         {
@@ -384,7 +387,7 @@ class MySQL implements QueryBuilder, DatabaseActions
                 }
                 catch ( Exception $ex )
                 {
-                    die( $ex->getMessage() );
+                    print 'Execute with binds failed!';
                 }
             }
             // execute
@@ -396,7 +399,7 @@ class MySQL implements QueryBuilder, DatabaseActions
                 }
                 catch ( Exception $ex )
                 {
-                    die( $ex->getMessage() );
+                    print 'Execute failed!';
                 }
             }
             // result
@@ -406,7 +409,7 @@ class MySQL implements QueryBuilder, DatabaseActions
         }
         catch ( Exception $ex )
         {
-            die( $ex->getMessage() );
+            print 'Prepare failed!';
         }
     }
 
